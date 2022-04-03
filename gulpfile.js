@@ -1,93 +1,94 @@
-// Adiciona os modulos instalados
-const gulp = require('gulp');
-const sass = require('gulp-sass')(require('sass'));
-const autoprefixer = require('gulp-autoprefixer');
-const browserSync = require('browser-sync').create();
-const concat = require('gulp-concat');
-const babel = require('gulp-babel');
-const uglify = require('gulp-uglify');
+const { src, dest, parallel, series, watch } = require("gulp");
 
-// Funçao para compilar o SASS e adicionar os prefixos
-function compilaSass() {
-  return gulp
-    .src('css/scss/*.scss')
+// Load plugins
+
+const uglify = require("gulp-uglify");
+const rename = require("gulp-rename");
+const sass = require("gulp-sass");
+const autoprefixer = require("gulp-autoprefixer");
+const cssnano = require("gulp-cssnano");
+const concat = require("gulp-concat");
+const clean = require("gulp-clean");
+const imagemin = require("gulp-imagemin");
+const changed = require("gulp-changed");
+const browsersync = require("browser-sync").create();
+
+// Clean assets
+
+function clear() {
+  return src("./assets/*", {
+    read: false,
+  }).pipe(clean());
+}
+
+// JS function
+
+function js() {
+  const source = "./src/js/*.js";
+
+  return src(source)
+    .pipe(changed(source))
+    .pipe(concat("bundle.js"))
+    .pipe(uglify())
     .pipe(
-      sass({
-        outputStyle: 'compressed',
+      rename({
+        extname: ".min.js",
       }),
     )
+    .pipe(dest("./assets/js/"))
+    .pipe(browsersync.stream());
+}
+
+// CSS function
+
+function css() {
+  const source = "./src/scss/main.scss";
+
+  return src(source)
+    .pipe(changed(source))
+    .pipe(sass())
     .pipe(
       autoprefixer({
+        overrideBrowserslist: ["last 2 versions"],
         cascade: false,
       }),
     )
-    .pipe(gulp.dest('css/'))
-    .pipe(browserSync.stream());
-}
-
-// Tarefa de gulp para a função de SASS
-gulp.task('sass', function (done) {
-  compilaSass();
-  done();
-});
-
-// Função para juntar o JS
-function gulpJS() {
-  return gulp
-    .src('js/main/*.js')
-    .pipe(concat('main.js'))
     .pipe(
-      babel({
-        presets: ['@babel/preset-env'],
+      rename({
+        extname: ".min.css",
       }),
     )
-    .pipe(uglify())
-    .pipe(gulp.dest('js/'))
-    .pipe(browserSync.stream());
+    .pipe(cssnano())
+    .pipe(dest("./assets/css/"))
+    .pipe(browsersync.stream());
 }
 
-gulp.task('mainjs', gulpJS);
+// Optimize images
 
-// JS Plugins
-function pluginJS() {
-  return gulp
-    .src([
-      'node_modules/jquery/dist/jquery.min.js',
-      'node_modules/moment/min/moment.min.js',
-      'js/plugins/*.js',
-    ])
-    .pipe(concat('plugins.js'))
-    .pipe(gulp.dest('js/'))
-    .pipe(browserSync.stream());
+function img() {
+  return src("./src/img/*").pipe(imagemin()).pipe(dest("./assets/img"));
 }
 
-gulp.task('pluginjs', pluginJS);
+// Watch files
 
-// Função para iniciar o browser
-function browser() {
-  browserSync.init({
+function watchFiles() {
+  watch("./src/scss/*", css);
+  watch("./src/js/*", js);
+  watch("./src/img/*", img);
+}
+
+// BrowserSync
+
+function browserSync() {
+  browsersync.init({
     server: {
-      baseDir: './',
+      baseDir: "./",
     },
+    port: 3000,
   });
 }
 
-// Tarefa para iniciar o browser-sync
-gulp.task('browser-sync', browser);
+// Tasks to define the execution of the functions simultaneously or in series
 
-// Função de watch do Gulp
-function watch() {
-  gulp.watch('css/scss/*.scss', compilaSass);
-  gulp.watch('js/main/*.js', gulpJS);
-  gulp.watch('js/plugins/*.js', pluginJS);
-  gulp.watch(['*.html']).on('change', browserSync.reload);
-}
-
-// Inicia a tarefa de watch
-gulp.task('watch', watch);
-
-// Tarefa padrão do Gulp, que inicia o watch e o browser-sync
-gulp.task(
-  'default',
-  gulp.parallel('watch', 'browser-sync', 'sass', 'mainjs', 'pluginjs'),
-);
+exports.watch = parallel(watchFiles, browserSync);
+exports.default = series(clear, parallel(js, css, img));
