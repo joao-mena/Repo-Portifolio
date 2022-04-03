@@ -1,94 +1,106 @@
-const { src, dest, parallel, series, watch } = require("gulp");
-
-// Load plugins
-
-const uglify = require("gulp-uglify");
-const rename = require("gulp-rename");
-const sass = require("gulp-sass");
-const autoprefixer = require("gulp-autoprefixer");
-const cssnano = require("gulp-cssnano");
-const concat = require("gulp-concat");
-const clean = require("gulp-clean");
+// Fetch required plugins
+const gulp = require("gulp");
+const { src, dest, watch, series, parallel } = require("gulp");
 const imagemin = require("gulp-imagemin");
-const changed = require("gulp-changed");
+const sourcemaps = require("gulp-sourcemaps");
+const concat = require("gulp-concat");
+const rename = require("gulp-rename");
+const replace = require("gulp-replace");
+const terser = require("gulp-terser");
+const sass = require("gulp-sass");
+const postcss = require("gulp-postcss");
+const autoprefixer = require("autoprefixer");
+const cssnano = require("cssnano");
 const browsersync = require("browser-sync").create();
 
-// Clean assets
+// All paths
+const paths = {
+  html: {
+    src: ["./src/**/*.html"],
+    dest: "./dist/",
+  },
+  images: {
+    src: ["./src/content/images/**/*"],
+    dest: "./dist/content/images/",
+  },
+  styles: {
+    src: ["./src/scss/**/*.scss"],
+    dest: "./dist/css/",
+  },
+  scripts: {
+    src: ["./src/js/**/*.js"],
+    dest: "./dist/js/",
+  },
+  cachebust: {
+    src: ["./dist/**/*.html"],
+    dest: "./dist/",
+  },
+};
 
-function clear() {
-  return src("./assets/*", {
-    read: false,
-  }).pipe(clean());
+// Copy html files
+function copyHtml() {
+  return src(paths.html.src).pipe(dest(paths.html.dest));
 }
 
-// JS function
-
-function js() {
-  const source = "./src/js/*.js";
-
-  return src(source)
-    .pipe(changed(source))
-    .pipe(concat("bundle.js"))
-    .pipe(uglify())
-    .pipe(
-      rename({
-        extname: ".min.js",
-      }),
-    )
-    .pipe(dest("./assets/js/"))
-    .pipe(browsersync.stream());
+function optimizeImages() {
+  return src(paths.images.src)
+    .pipe(imagemin().on("error", (error) => console.log(error)))
+    .pipe(dest(paths.images.dest));
 }
 
-// CSS function
-
-function css() {
-  const source = "./src/scss/main.scss";
-
-  return src(source)
-    .pipe(changed(source))
-    .pipe(sass())
-    .pipe(
-      autoprefixer({
-        overrideBrowserslist: ["last 2 versions"],
-        cascade: false,
-      }),
-    )
-    .pipe(
-      rename({
-        extname: ".min.css",
-      }),
-    )
-    .pipe(cssnano())
-    .pipe(dest("./assets/css/"))
-    .pipe(browsersync.stream());
+function compileStyles() {
+  return src(paths.styles.src)
+    .pipe(sourcemaps.init())
+    .pipe(sass().on("error", sass.logError))
+    .pipe(postcss([autoprefixer(), cssnano()]))
+    .pipe(rename({ suffix: ".min" }))
+    .pipe(sourcemaps.write("."))
+    .pipe(dest(paths.styles.dest));
 }
 
-// Optimize images
-
-function img() {
-  return src("./src/img/*").pipe(imagemin()).pipe(dest("./assets/img"));
+function minifyScripts() {
+  return src(paths.scripts.src)
+    .pipe(sourcemaps.init())
+    .pipe(terser().on("error", (error) => console.log(error)))
+    .pipe(rename({ suffix: ".min" }))
+    .pipe(sourcemaps.write("."))
+    .pipe(dest(paths.scripts.dest));
 }
 
-// Watch files
+function cacheBust() {
+  return src(paths.cachebust.src)
+    .pipe(replace(/cache_bust=\d+/g, "cache_bust=" + new Date().getTime()))
+    .pipe(dest(paths.cachebust.dest));
+}
 
-function watchFiles() {
-  watch("./src/scss/*", css);
-  watch("./src/js/*", js);
-  watch("./src/img/*", img);
+function watcher() {
+  watch(paths.html.src, series(copyHtml, cacheBust));
+  watch(paths.images.src, optimizeImages);
+  watch(paths.styles.src, parallel(compileStyles, cacheBust));
+  watch(paths.scripts.src, parallel(minifyScripts, cacheBust));
 }
 
 // BrowserSync
-
 function browserSync() {
-  browsersync.init({
-    server: {
-      baseDir: "./",
-    },
+  browsersync({
+    proxy: "http://localhost",
+    browser: ["chrome"],
     port: 3000,
+    notify: false,
+    open: true,
   });
 }
 
-// Tasks to define the execution of the functions simultaneously or in series
+// BrowserSync reload
+function browserReload() {
+  return browsersync.reload;
+}
 
-exports.watch = parallel(watchFiles, browserSync);
-exports.default = series(clear, parallel(js, css, img));
+const watching = parallel(watcher, browserSync);
+
+// Export tasks to make them public
+exports.watch = watching;
+exports.default = series(
+  parallel(copyHtml, optimizeImages, compileStyles, minifyScripts),
+  cacheBust,
+);

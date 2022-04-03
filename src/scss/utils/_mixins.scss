@@ -1,0 +1,104 @@
+@mixin ellipsis-multiline($line-height, $lines: 2, $set-height: true) {
+    @if $set-height == true {
+        height: rem($line-height * $lines);
+    } @else {
+        max-height: rem($line-height * $lines);
+    }
+
+    display: block;
+    overflow: hidden;
+    line-height: rem($line-height);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: $lines;
+    text-overflow: -o-ellipsis-lastline;
+}
+
+@mixin use-sprite($sprite, $width: true) {
+    $url: #{nth($sprite, 9)};
+    $factor: 1px;
+
+    @if $width != true {
+        $factor: ($width + $sprite-padding) * 100 / nth($sprite, 5) / 100;
+    }
+
+    display: inline-block;
+    vertical-align: middle;
+    width: parseInt(nth($sprite, 5) + $sprite-padding) * $factor;
+    height: parseInt(nth($sprite, 6) + $sprite-padding) * $factor;
+    background-position: (parseInt(nth($sprite, 3)) * $factor) (parseInt(nth($sprite, 4)) * $factor);
+    background-size: (parseInt(nth($sprite, 7)) * $factor) auto;
+    background-image: v-url($url);
+    background-repeat: no-repeat;
+}
+
+@mixin webp-background(
+    $img,
+    $color: transparent,
+    $repeat: repeat,
+    $attachment: scroll,
+    $position: center,
+    $size: auto,
+    $type: ".png"
+) {
+    background: $color url("#{$img-path}#{$img}.webp") $repeat $attachment $position / $size;
+
+    .no-webp & {
+        background-image: url("#{$img-path}#{$img}#{$type}");
+    }
+}
+
+// Set image as object-fit: cover
+@mixin object-cover() {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  object-fit: cover;
+}
+
+// Set image as object-fit: contain
+@mixin object-contain() {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  bottom: 0;
+  left: auto;
+  right: 0;
+  object-fit: contain;
+}
+
+// Set height relative to width using before
+@mixin relative-height($width, $height) {
+  $percent: parseInt($height) * 100 / parseInt($width);
+
+  width: rem($width);
+
+  &:before {
+    content: "";
+    display: block;
+    padding-top: #{$percent + "%"};
+  }
+}
+
+@mixin breakpoint-up($point) {
+    @media only screen and (min-width: $point) {
+        @content;
+    }
+}
+
+@mixin breakpoint-down($point) {
+    @media only screen and (max-width: #{$point - .02px}) {
+        @content;
+    }
+}
+
+@mixin breakpoint-between($point1, $point2) {
+    @media only screen and (min-width: $point1) and (max-width: #{$point2 - .02px}) {
+        @content;
+    }
+}

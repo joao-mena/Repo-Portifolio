@@ -1,0 +1,68 @@
+/*** LAYOUT WIDTH ***/
+$mobile-width: 375px !default;
+$tablet-width: 750px !default;
+$desktop-width: 1230px !default;
+$max-container: 1180px !default;
+
+/*** MEDIAS ***/
+$screen-xs: 480px !default;
+$screen-xs-max: 576px !default;
+$screen-sm-max: 991px !default;
+$screen-md-max: 1230px !default;
+$screen-max: 1980px !default;
+
+$xs: "screen and (max-width: #{$screen-xs})";
+$max-xs: "screen and (max-width: #{$screen-xs-max})";
+$max-sm: "screen and (max-width: #{$screen-sm-max})";
+$max-tb: "screen and (max-width: #{$tablet-width - 1})";
+$max-md: "screen and (max-width: #{$screen-md-max})";
+
+$min-sm: "screen and (min-width: #{$screen-xs-max + 1})";
+$min-tb: "screen and (min-width: #{$tablet-width})";
+$min-md: "screen and (min-width: #{$screen-sm-max + 1})"; // Rules for desktop and print
+
+/*** COLORs ***/
+$c-1: var(--color-1); // #ff7043
+$c-2: var(--color-2); // #471f05
+$c-3: var(--color-3); // #252525
+$c-4: var(--color-4); // #471f05
+$c-5: var(--color-5); // #ffffff
+$c-6: var(--color-6); // #f1f1f1
+$c-7: var(--color-7); // #bababa
+$c-8: var(--color-8); // #ede7e2
+$c-9: var(--color-9); // #f2af29
+$c-10: var(--color-10); // #09aa09
+$c-11: var(--color-11); // #ea4335
+
+$colors: $c-1, $c-2, $c-3, $c-4, $c-5, $c-6, $c-7, $c-8, $c-9, $c-10, $c-11;
+
+/*** SPACES ***/
+$spaces: 4, 8, 12, 16, 24, 32, 40, 80;
+
+/*** FILTERs ***/
+$filter-white: invert(100%);
+$filter-color-0: invert(15%) sepia(57%) saturate(726%) hue-rotate(348deg) brightness(99%) contrast(94%);
+$filter-color-1: invert(98%) sepia(4%) saturate(441%) hue-rotate(325deg) brightness(91%) contrast(104%);
+$filter-color-2: invert(54%) sepia(32%) saturate(2937%) hue-rotate(333deg) brightness(104%) contrast(101%);
+$filter-color-3: invert(62%) sepia(98%) saturate(370%) hue-rotate(356deg) brightness(98%) contrast(94%);
+
+/*** FONTs ***/
+$font-0: "Nunito Sans", times;
+
+$font-size: 16px;
+
+/*** EASES ***/
+$ease-0: all 0.3s ease-in-out;
+$ease-1: all 0.5s ease-in-out;
+
+/*** CONFIGs ***/
+$img-path: "../img/";
+$font-path: "../fonts/";
+
+$version: "#{random(9999)}" !default;
+$sprite-padding: 2px;
+$padding: 15px;
+
+$header-height: 64px;
+$header-height-md: 74px;
+$menu-height: 66px;

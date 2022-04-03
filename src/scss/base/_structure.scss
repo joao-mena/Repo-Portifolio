@@ -1,0 +1,32 @@
+.main-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.container {
+  display: block;
+  width: 100%;
+  max-width: $max-container;
+  margin: 0 auto;
+  padding: 0 space(4);
+  background-color: transparent;
+
+  &--no-padding-xs {
+    @media #{$max-sm} {
+      padding: 0;
+    }
+  }
+
+  &--no-padding-md {
+    @media #{$min-md} {
+      padding: 0;
+    }
+  }
+
+  &--no-padding {
+    padding: 0;
+  }
+}

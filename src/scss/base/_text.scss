@@ -1,0 +1,233 @@
+a {
+  color: $c-2;
+  transition: $ease-0;
+
+  &:hover {
+    color: $c-2;
+  }
+}
+
+[onclick],
+[href],
+[for],
+[data-tooltip],
+.accordion-header {
+  cursor: pointer;
+}
+
+b,
+strong {
+  font-weight: 700;
+}
+
+u {
+  text-decoration: underline;
+}
+
+sup {
+  font-size: 0.7em;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+  top: -0.4rem;
+}
+
+.paragraph {
+  line-height: 1.2;
+  font-size: rem(14px);
+
+  @media #{$min-sm} {
+    font-size: rem(16px);
+  }
+
+  a {
+    font-weight: 700;
+    text-decoration: underline;
+
+    &:hover {
+      color: $c-8;
+    }
+  }
+}
+
+p {
+  @extend .paragraph;
+
+  & ~ p,
+  & ~ ul {
+    margin-top: space(3);
+  }
+}
+
+ul {
+  li {
+    @extend .paragraph;
+
+    position: relative;
+  }
+
+  & ~ p,
+  & ~ ul {
+    margin-top: space(3);
+  }
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+.color-0 {
+  color: $c-2;
+}
+
+.color-1 {
+  color: $c-8;
+}
+
+.color-2 {
+  color: $c-1;
+}
+
+.color-3 {
+  color: $c-9;
+}
+
+.c-w {
+  color: $c-5;
+}
+
+// HEADLINES
+[class^="hl-"] {
+  display: block;
+}
+
+.hl-1 {
+  font-size: rem(32px);
+  font-weight: 800;
+}
+
+.hl-2 {
+  font-size: rem(28px);
+  font-weight: 800;
+}
+
+.hl-3 {
+  font-size: rem(22px);
+  font-weight: 800;
+}
+
+.hl-4 {
+  font-size: rem(18px);
+  font-style: italic;
+  font-weight: 800;
+}
+
+.hl-5 {
+  font-size: rem(18px);
+  font-weight: 400;
+}
+
+// REFERENCES
+.ref-1 {
+  font-size: rem(12px);
+}
+
+.ref-2 {
+  font-size: rem(10px);
+}
+
+.title {
+  font-size: rem(24px);
+  font-weight: bold;
+  margin-bottom: rem(20px);
+  color: $c-2;
+  display: flex;
+  align-items: center;
+
+  &--arrow {
+    &::after {
+      content: "";
+      vertical-align: middle;
+      flex: 0 0 rem(30px);
+      width: rem(30px);
+      height: rem(30px);
+      background: $c-1;
+      margin-left: rem(12px);
+    }
+  }
+}
+
+// .default-font {
+//   &--32 {
+//     font-size: rem(32px);
+//   }
+//   &--28 {
+//     font-size: rem(28px);
+//   }
+//   &--22 {
+//     font-size: rem(22px);
+//   }
+//   &--18 {
+//     font-size: rem(18px);
+//   }
+//   &--16 {
+//     font-size: rem(16px);
+//   }
+//   &--14 {
+//     font-size: rem(14px);
+//   }
+//   &--12 {
+//     font-size: rem(12px);
+//   }
+//   &--10 {
+//     font-size: rem(10px);
+//   }
+// }
+
+.bold {
+  font-weight: 700;
+}
+
+.eBold {
+  font-weight: 800;
+}
+
+.default-text {
+  &__comment {
+    display: flex;
+    align-items: center;
+    font-size: rem(15px);
+    font-weight: 700;
+
+    .svg-arrow {
+      margin-left: rem(10px);
+      width: rem(18px);
+      height: rem(18px);
+      filter: $filter-color-2;
+    }
+
+    &--first {
+      color: $c-7;
+      font-size: rem(15px);
+      flex-direction: column;
+      margin-top: rem(30px);
+      row-gap: rem(10px);
+
+      .svg-talk-baloon {
+        filter: $filter-color-1;
+      }
+    }
+  }
+}
