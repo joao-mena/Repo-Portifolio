@@ -1,106 +1,103 @@
-// Fetch required plugins
-const gulp = require("gulp");
-const { src, dest, watch, series, parallel } = require("gulp");
-const imagemin = require("gulp-imagemin");
-const sourcemaps = require("gulp-sourcemaps");
-const concat = require("gulp-concat");
-const rename = require("gulp-rename");
-const replace = require("gulp-replace");
-const terser = require("gulp-terser");
+const { series, parallel, src, dest, watch } = require("gulp");
+const { sync } = require("glob");
 const sass = require("gulp-sass");
-const postcss = require("gulp-postcss");
-const autoprefixer = require("autoprefixer");
-const cssnano = require("cssnano");
-const browsersync = require("browser-sync").create();
+const { join, basename } = require("path");
+const cleanCSS = require("gulp-clean-css");
+const rename = require("gulp-rename");
+const browserSync = require("browser-sync").create();
+const babel = require("gulp-babel");
+const uglify = require("gulp-uglify");
+const sourcemaps = require("gulp-sourcemaps");
+const { exec } = require("child_process");
+const { promisify } = require("util");
+require("colors");
+sass.compiler = require("node-sass");
+const path = join(__dirname, "src");
+const execAsync = promisify(exec);
 
-// All paths
-const paths = {
-  html: {
-    src: ["./src/**/*.html"],
-    dest: "./dist/",
-  },
-  images: {
-    src: ["./src/content/images/**/*"],
-    dest: "./dist/content/images/",
-  },
-  styles: {
-    src: ["./src/scss/**/*.scss"],
-    dest: "./dist/css/",
-  },
-  scripts: {
-    src: ["./src/js/**/*.js"],
-    dest: "./dist/js/",
-  },
-  cachebust: {
-    src: ["./dist/**/*.html"],
-    dest: "./dist/",
-  },
-};
-
-// Copy html files
-function copyHtml() {
-  return src(paths.html.src).pipe(dest(paths.html.dest));
-}
-
-function optimizeImages() {
-  return src(paths.images.src)
-    .pipe(imagemin().on("error", (error) => console.log(error)))
-    .pipe(dest(paths.images.dest));
-}
-
-function compileStyles() {
-  return src(paths.styles.src)
+const compileSCSS = () =>
+  src(sync(join(path, "scss", "**/*.scss")))
     .pipe(sourcemaps.init())
     .pipe(sass().on("error", sass.logError))
-    .pipe(postcss([autoprefixer(), cssnano()]))
-    .pipe(rename({ suffix: ".min" }))
     .pipe(sourcemaps.write("."))
-    .pipe(dest(paths.styles.dest));
-}
+    .pipe(dest("dist/css"));
 
-function minifyScripts() {
-  return src(paths.scripts.src)
+const compileJS = () =>
+  src(sync(join(path, "js", "**/*.js")))
     .pipe(sourcemaps.init())
-    .pipe(terser().on("error", (error) => console.log(error)))
-    .pipe(rename({ suffix: ".min" }))
+    .pipe(
+      babel({
+        presets: ["@babel/env"],
+      }),
+    )
     .pipe(sourcemaps.write("."))
-    .pipe(dest(paths.scripts.dest));
-}
+    .pipe(dest("dist/js"));
 
-function cacheBust() {
-  return src(paths.cachebust.src)
-    .pipe(replace(/cache_bust=\d+/g, "cache_bust=" + new Date().getTime()))
-    .pipe(dest(paths.cachebust.dest));
-}
+const minifyCSS = () =>
+  src(sync(join("dist", "**/!(*.min).css")))
+    .pipe(sourcemaps.init())
+    .pipe(cleanCSS({ compatibility: "ie8" }))
+    .pipe(
+      rename(({ dirname, basename }) => ({
+        dirname,
+        basename: `${basename}.min`,
+        extname: ".css",
+      })),
+    )
+    .pipe(sourcemaps.write("."))
+    .pipe(dest("dist/css"));
 
-function watcher() {
-  watch(paths.html.src, series(copyHtml, cacheBust));
-  watch(paths.images.src, optimizeImages);
-  watch(paths.styles.src, parallel(compileStyles, cacheBust));
-  watch(paths.scripts.src, parallel(minifyScripts, cacheBust));
-}
+const minifyJS = () =>
+  src(sync(join("dist", "**/*.js")))
+    .pipe(uglify())
+    .pipe(sourcemaps.init({ loadMaps: true }))
+    .pipe(sourcemaps.write("."))
+    .pipe(dest("dist/js"));
 
-// BrowserSync
-function browserSync() {
-  browsersync({
-    proxy: "http://localhost",
-    browser: ["chrome"],
-    port: 3000,
-    notify: false,
-    open: true,
+const dev = () => {
+  browserSync.init({
+    server: {
+      baseDir: "dist/html",
+    },
   });
-}
+};
 
-// BrowserSync reload
-function browserReload() {
-  return browsersync.reload;
-}
+const compileHtml = () =>
+  src(sync(join(path, "html", "**/*.html")))
+    .on("error", function () {
+      notify("HTML include error");
+    })
+    .pipe(dest("dist/html"));
 
-const watching = parallel(watcher, browserSync);
+const watchJsAndSCSS = (cb) => {
+  const jsFiles = sync(join(path, "js", "**/*.js"));
+  console.log(`👁️ ${"JavaScript".yellow} files we will watch... 👁️`.bold);
+  console.table(jsFiles.map((path) => basename(path)));
+  watch(jsFiles, series(compileJS, minifyJS, realoadBrowser));
 
-// Export tasks to make them public
-exports.watch = watching;
+  const scssFiles = sync(join(path, "scss", "**/*.scss"));
+  console.log(`👁️ ${"SCSS".magenta} files we will watch... 👁️`.bold);
+  console.table(scssFiles.map((path) => basename(path)));
+  watch(scssFiles, series(compileSCSS, minifyCSS, realoadBrowser));
+
+  const htmlFiles = sync(join(path, "html", "**/*.html"));
+  console.log(`👁️ ${"HTML".magenta} files we will watch... 👁️`.bold);
+  console.table(htmlFiles.map((path) => basename(path)));
+  watch(htmlFiles, series(compileHtml, realoadBrowser));
+  cb();
+};
+
+const realoadBrowser = (cb) => {
+  browserSync.reload();
+  cb();
+};
+
+const execShellStuff = async () => await execAsync("ls > dump.txt");
+
 exports.default = series(
-  parallel(copyHtml, optimizeImages, compileStyles, minifyScripts),
-  cacheBust,
+  parallel(compileJS, compileSCSS, compileHtml),
+  parallel(minifyCSS, minifyJS),
+  watchJsAndSCSS,
+  execShellStuff,
+  dev,
 );
