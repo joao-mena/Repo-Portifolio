@@ -69,7 +69,7 @@ const compileHtml = () =>
     })
     .pipe(dest("dist/html"));
 
-const watchJsAndSCSS = (cb) => {
+const watchFiles = (cb) => {
   const jsFiles = sync(join(path, "js", "**/*.js"));
   console.log(`👁️ ${"JavaScript".yellow} files we will watch... 👁️`.bold);
   console.table(jsFiles.map((path) => basename(path)));
@@ -92,12 +92,9 @@ const realoadBrowser = (cb) => {
   cb();
 };
 
-const execShellStuff = async () => await execAsync("ls > dump.txt");
-
 exports.default = series(
   parallel(compileJS, compileSCSS, compileHtml),
   parallel(minifyCSS, minifyJS),
-  watchJsAndSCSS,
-  execShellStuff,
+  watchFiles,
   dev,
 );
