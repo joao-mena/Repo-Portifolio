@@ -8,12 +8,10 @@ const browserSync = require("browser-sync").create();
 const babel = require("gulp-babel");
 const uglify = require("gulp-uglify");
 const sourcemaps = require("gulp-sourcemaps");
-const { exec } = require("child_process");
-const { promisify } = require("util");
 require("colors");
 sass.compiler = require("node-sass");
 const path = join(__dirname, "src");
-const execAsync = promisify(exec);
+const fileinclude = require("gulp-file-include");
 
 const compileSCSS = () =>
   src(sync(join(path, "scss", "**/*.scss")))
@@ -64,6 +62,12 @@ const dev = () => {
 
 const compileHtml = () =>
   src(sync(join(path, "html", "**/*.html")))
+    .pipe(
+      fileinclude({
+        prefix: "@@",
+        basepath: "@file",
+      }),
+    )
     .on("error", function () {
       notify("HTML include error");
     })
