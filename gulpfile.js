@@ -12,9 +12,12 @@ require("colors");
 sass.compiler = require("node-sass");
 const path = join(__dirname, "src");
 const fileinclude = require("gulp-file-include");
+const clean = require("gulp-clean");
+
+const cleanDist = () => src("dist").pipe(clean({ force: true }));
 
 const compileSCSS = () =>
-  src(sync(join(path, "scss", "**/*.scss")))
+  src(sync(join(path, "scss", "*.scss")))
     .pipe(sourcemaps.init())
     .pipe(sass().on("error", sass.logError))
     .pipe(sourcemaps.write("."))
@@ -52,16 +55,8 @@ const minifyJS = () =>
     .pipe(sourcemaps.write("."))
     .pipe(dest("dist/js"));
 
-const dev = () => {
-  browserSync.init({
-    server: {
-      baseDir: "dist/html",
-    },
-  });
-};
-
 const compileHtml = () =>
-  src(sync(join(path, "html", "**/*.html")))
+  src(sync(join(path, "html", "*.html")))
     .pipe(
       fileinclude({
         prefix: "@@",
@@ -71,7 +66,21 @@ const compileHtml = () =>
     .on("error", function () {
       notify("HTML include error");
     })
-    .pipe(dest("dist/html"));
+    .pipe(dest("dist"));
+
+const dev = (cb) => {
+  browserSync.init({
+    server: {
+      baseDir: "dist",
+    },
+  });
+  cb();
+};
+
+const realoadBrowser = (cb) => {
+  browserSync.reload();
+  cb();
+};
 
 const watchFiles = (cb) => {
   const jsFiles = sync(join(path, "js", "**/*.js"));
@@ -91,12 +100,8 @@ const watchFiles = (cb) => {
   cb();
 };
 
-const realoadBrowser = (cb) => {
-  browserSync.reload();
-  cb();
-};
-
 exports.default = series(
+  cleanDist,
   parallel(compileJS, compileSCSS, compileHtml),
   parallel(minifyCSS, minifyJS),
   watchFiles,
