@@ -5,8 +5,8 @@
 
 #header {
   box-sizing: border-box;
-  height: 70px;
-  padding: 1rem;
+  height: rem(50px);
+  padding: 0 space(3);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -28,12 +28,12 @@
   display: none;
 }
 
-@media (max-width: 600px) {
+@include breakpoint-down($md) {
   #menu {
     display: block;
     position: absolute;
     width: 100%;
-    top: 70px;
+    top: rem(50px);
     right: 0px;
     background: #e7e7e7;
     transition: 0.6s;
@@ -43,7 +43,7 @@
     overflow-y: hidden;
   }
   #nav.active #menu {
-    height: calc(100vh - 70px);
+    height: calc(100vh - #{rem(50px)});
     visibility: visible;
     overflow-y: auto;
   }

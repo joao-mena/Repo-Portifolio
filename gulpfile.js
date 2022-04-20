@@ -17,7 +17,7 @@ const clean = require("gulp-clean");
 const cleanDist = () => src("dist").pipe(clean({ force: true }));
 
 const compileSCSS = () =>
-  src(sync(join(path, "scss", "*.scss")))
+  src(sync(join(path, "scss", "**/*.scss")))
     .pipe(sourcemaps.init())
     .pipe(sass().on("error", sass.logError))
     .pipe(sourcemaps.write("."))
@@ -56,7 +56,7 @@ const minifyJS = () =>
     .pipe(dest("dist/js"));
 
 const compileHtml = () =>
-  src(sync(join(path, "html", "*.html")))
+  src(sync(join(path, "html", "**/*.html")))
     .pipe(
       fileinclude({
         prefix: "@@",
@@ -102,7 +102,8 @@ const watchFiles = (cb) => {
 
 exports.default = series(
   cleanDist,
-  parallel(compileJS, compileSCSS, compileHtml),
+  compileHtml,
+  parallel(compileJS, compileSCSS),
   parallel(minifyCSS, minifyJS),
   watchFiles,
   dev,

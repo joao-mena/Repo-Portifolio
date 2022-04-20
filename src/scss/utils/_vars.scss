@@ -18,21 +18,24 @@
   --smaller-font-size: 0.75rem;
 
   /*===== Margenes =====*/
-  --mb-2: 1rem;
-  --mb-4: 2rem;
-  --mb-5: 2.5rem;
-  --mb-6: 3rem;
+  --mb-1: 1rem;
+  --mb-2: 2rem;
+  --mb-3: 2.5rem;
+  --mb-4: 3rem;
 
   /*===== z index =====*/
   --z-back: -10;
   --z-fixed: 100;
 
-  @media screen and (min-width: 968px) {
+  @media screen and (min-width: 992px) {
     --big-font-size: 3.5rem;
     --h2-font-size: 2rem;
+    --normal-font-size: 1.25rem;
     --smaller-font-size: 0.875rem;
   }
 }
+
+$font-size: 16px;
 
 $xs: 0;
 $sm: 576px;
@@ -41,4 +44,11 @@ $lg: 992px;
 $xl: 1200px;
 $xxl: 1400px;
 
-$space: 4, 8, 12, 16, 24, 32;
+$spaces: 5, 10, 15, 20, 25, 30;
+
+$color1: #f75b5b;
+$color2: #c84051;
+$color3: #4f3462;
+$color4: #794d9a;
+$color5: #2e394b;
+$white: #ffffff;
