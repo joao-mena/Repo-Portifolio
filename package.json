@@ -26,7 +26,10 @@
     "glob": "^7.1.6",
     "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
+    "gulp-clean": "^0.4.0",
     "gulp-clean-css": "^4.3.0",
+    "gulp-file-include": "^2.3.0",
+    "gulp-imagemin": "^5.0.3",
     "gulp-rename": "^2.0.0",
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",
@@ -34,7 +37,7 @@
     "node-sass": "^4.14.1"
   },
   "dependencies": {
-    "gulp-clean": "^0.4.0",
-    "gulp-file-include": "^2.3.0"
+    "gulp-clean-dir": "^1.0.2",
+    "gulp-cleanhtml": "^1.0.3"
   }
 }

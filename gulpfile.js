@@ -3,6 +3,7 @@ const { sync } = require("glob");
 const sass = require("gulp-sass");
 const { join, basename } = require("path");
 const cleanCSS = require("gulp-clean-css");
+const cleanhtml = require("gulp-cleanhtml");
 const rename = require("gulp-rename");
 const browserSync = require("browser-sync").create();
 const babel = require("gulp-babel");
@@ -12,9 +13,13 @@ require("colors");
 sass.compiler = require("node-sass");
 const path = join(__dirname, "src");
 const fileinclude = require("gulp-file-include");
-const clean = require("gulp-clean");
+const imagemin = require("gulp-imagemin");
+const cleanDir = require("gulp-clean-dir");
 
-const cleanDist = () => src("dist").pipe(clean({ force: true }));
+const cleanDist = () =>
+  src(sync(join("dist")))
+    .pipe(cleanDir("dist"))
+    .pipe(dest("dist"));
 
 const compileSCSS = () =>
   src(sync(join(path, "scss", "**/*.scss")))
@@ -57,6 +62,7 @@ const minifyJS = () =>
 
 const compileHtml = () =>
   src(sync(join(path, "html", "**/*.html")))
+    .pipe(cleanhtml())
     .pipe(
       fileinclude({
         prefix: "@@",
@@ -68,10 +74,29 @@ const compileHtml = () =>
     })
     .pipe(dest("dist"));
 
+const imagesMin = () =>
+  src(sync(join(path, "images", "**/*")))
+    .pipe(
+      imagemin([
+        imagemin.gifsicle({ interlaced: true }),
+        imagemin.jpegtran({ progressive: true }),
+        imagemin.optipng({ optimizationLevel: 5 }),
+        imagemin.svgo({
+          plugins: [
+            {
+              removeViewBox: false,
+              collapseGroups: true,
+            },
+          ],
+        }),
+      ]),
+    )
+    .pipe(dest("dist/images"));
+
 const dev = (cb) => {
   browserSync.init({
     server: {
-      baseDir: "dist",
+      baseDir: "dist/",
     },
   });
   cb();
@@ -97,14 +122,30 @@ const watchFiles = (cb) => {
   console.log(`👁️ ${"HTML".magenta} files we will watch... 👁️`.bold);
   console.table(htmlFiles.map((path) => basename(path)));
   watch(htmlFiles, series(compileHtml, realoadBrowser));
+
+  const imageFiles = sync(join(path, "images", "**/*"));
+  console.log(`👁️ ${"IMAGE".magenta} files we will watch... 👁️`.bold);
+  console.table(imageFiles.map((path) => basename(path)));
+  watch(imageFiles, series(imagesMin, realoadBrowser));
   cb();
 };
 
 exports.default = series(
   cleanDist,
-  compileHtml,
+  imagesMin,
   parallel(compileJS, compileSCSS),
   parallel(minifyCSS, minifyJS),
+  compileHtml,
   watchFiles,
   dev,
+);
+
+exports.build = series(
+  cleanDist,
+  compileHtml,
+  compileJS,
+  compileSCSS,
+  minifyCSS,
+  minifyJS,
+  imagesMin,
 );

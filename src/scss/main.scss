@@ -2,16 +2,20 @@
 @import "utils/vars";
 @import "utils/functions";
 @import "utils/mixins";
+@import "utils/svg-assets";
 
 /* IMPORT BASE */
 @import "base/fonts";
 @import "base/reset";
 @import "base/struture";
+@import "base/typograph";
+@import "base/buttons";
 
 /* IMPORT LAYOUT */
 // @import "layout/header";
 @import "layout/layout-mob";
 
 /* IMPORT COMPONENTS */
+@import "components/banner";
 
 /* IMPORT PAGES */

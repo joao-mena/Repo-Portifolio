@@ -1,37 +1,48 @@
 :root {
   --header-height: 3rem;
-  --font-semi: 600;
-
-  /*===== Colores =====*/
-  /*Purple 260 - Red 355 - Blue 224 - Pink 340*/
-  /* HSL color mode */
-  --hue-color: 224;
-  --first-color: hsl(var(--hue-color), 89%, 60%);
-  --second-color: hsl(var(--hue-color), 56%, 12%);
 
   /*===== Fuente y tipografia =====*/
   --body-font: "Poppins", sans-serif;
 
+  /* .5rem = 8px, 1rem = 16px, 1.5rem = 24px ... */
   --big-font-size: 2rem;
+  --h1-font-size: 1.5rem;
   --h2-font-size: 1.25rem;
+  --h3-font-size: 1.125rem;
   --normal-font-size: 1rem;
+  --small-font-size: 0.813rem;
   --smaller-font-size: 0.75rem;
 
-  /*===== Margenes =====*/
+  /*========== Font weight ==========*/
+  --font-medium: 500;
+  --font-semi-bold: 600;
+
+  /*========== Margenes Bottom ==========*/
+  /* .25rem = 4px, .5rem = 8px, .75rem = 12px ... */
+  --mb-0-25: 0.25rem;
+  --mb-0-5: 0.5rem;
+  --mb-0-75: 0.75rem;
   --mb-1: 1rem;
+  --mb-1-5: 1.5rem;
   --mb-2: 2rem;
-  --mb-3: 2.5rem;
-  --mb-4: 3rem;
+  --mb-2-5: 2.5rem;
+  --mb-3: 3rem;
 
-  /*===== z index =====*/
-  --z-back: -10;
+  /*========== z index ==========*/
+  --z-tooltip: 10;
   --z-fixed: 100;
+  --z-modal: 1000;
+}
 
+:root {
   @media screen and (min-width: 992px) {
-    --big-font-size: 3.5rem;
-    --h2-font-size: 2rem;
-    --normal-font-size: 1.25rem;
-    --smaller-font-size: 0.875rem;
+    --big-font-size: 3rem;
+    --h1-font-size: 2.25rem;
+    --h2-font-size: 1.5rem;
+    --h3-font-size: 1.25rem;
+    --normal-font-size: 1.125rem;
+    --small-font-size: 0.875rem;
+    --smaller-font-size: 0.813rem;
   }
 }
 
@@ -46,9 +57,10 @@ $xxl: 1400px;
 
 $spaces: 5, 10, 15, 20, 25, 30;
 
-$color1: #f75b5b;
-$color2: #c84051;
-$color3: #4f3462;
-$color4: #794d9a;
-$color5: #2e394b;
+$color-1: #f75b5b;
+$color-2: #c84051;
+$color-3: #4f3462;
+$color-4: #794d9a;
+$color-5: #2e394b;
 $white: #ffffff;
+$black: #000000;

@@ -1,0 +1,24 @@
+.typo {
+  &__title {
+    font-size: var(--h1-font-size);
+    color: $white;
+    text-align: center;
+  }
+
+  &__title-big {
+    font-size: var(--big-font-size);
+    color: $white;
+    text-align: center;
+  }
+
+  &__subtitle {
+    display: block;
+    font-size: var(--small-font-size);
+    margin-bottom: var(--mb-3);
+  }
+
+  &__text {
+    font-size: var(--normal-font-size);
+    color: $white;
+  }
+}
