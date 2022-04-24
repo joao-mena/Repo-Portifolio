@@ -27,6 +27,8 @@
 
   .title {
     grid-area: title;
+    display: flex;
+    align-items: center;
   }
 
   .description {
