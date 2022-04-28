@@ -75,7 +75,7 @@ const compileHtml = () =>
     .pipe(dest("dist"));
 
 const imagesMin = () =>
-  src(sync(join(path, "images", "**/*")))
+  src(sync(join(path, "img", "**/*")))
     .pipe(
       imagemin([
         imagemin.gifsicle({ interlaced: true }),
@@ -91,12 +91,12 @@ const imagesMin = () =>
         }),
       ]),
     )
-    .pipe(dest("dist/images"));
+    .pipe(dest("dist/img"));
 
 const dev = (cb) => {
   browserSync.init({
     server: {
-      baseDir: "dist/",
+      baseDir: "dist",
     },
   });
   cb();
