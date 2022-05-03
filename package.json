@@ -34,10 +34,8 @@
     "gulp-sass": "^4.1.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
-    "node-sass": "^4.14.1"
-  },
-  "dependencies": {
-    "gulp-clean-dir": "^1.0.2",
-    "gulp-cleanhtml": "^1.0.3"
+    "node-sass": "^4.14.1",
+    "gulp-cleanhtml": "^1.0.3",
+    "del": "^6.0.0"
   }
 }

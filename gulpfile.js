@@ -1,4 +1,4 @@
-const { series, parallel, src, dest, watch } = require("gulp");
+const { series, parallel, src, dest, watch, lastRun } = require("gulp");
 const { sync } = require("glob");
 const sass = require("gulp-sass");
 const { join, basename } = require("path");
@@ -14,12 +14,9 @@ sass.compiler = require("node-sass");
 const path = join(__dirname, "src");
 const fileinclude = require("gulp-file-include");
 const imagemin = require("gulp-imagemin");
-const cleanDir = require("gulp-clean-dir");
+const del = require("del");
 
-const cleanDist = () =>
-  src(sync(join("dist")))
-    .pipe(cleanDir("dist"))
-    .pipe(dest("dist"));
+const cleanDist = () => del(["dist"]);
 
 const compileSCSS = () =>
   src(sync(join(path, "scss", "**/*.scss")))
@@ -61,7 +58,7 @@ const minifyJS = () =>
     .pipe(dest("dist/js"));
 
 const compileHtml = () =>
-  src(sync(join(path, "html", "**/*.html")))
+  src(sync(join(path, "html", "*.html")))
     .pipe(cleanhtml())
     .pipe(
       fileinclude({
@@ -96,7 +93,7 @@ const imagesMin = () =>
 const dev = (cb) => {
   browserSync.init({
     server: {
-      baseDir: "dist",
+      baseDir: "./dist",
     },
   });
   cb();
