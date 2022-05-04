@@ -72,7 +72,7 @@ const compileHtml = () =>
     .pipe(dest("dist"));
 
 const imagesMin = () =>
-  src(sync(join(path, "img", "**/*")))
+  src(sync(join(path, "img", "**/*")), lastRun(imagesMin))
     .pipe(
       imagemin([
         imagemin.gifsicle({ interlaced: true }),
@@ -120,7 +120,7 @@ const watchFiles = (cb) => {
   console.table(htmlFiles.map((path) => basename(path)));
   watch(htmlFiles, series(compileHtml, realoadBrowser));
 
-  const imageFiles = sync(join(path, "images", "**/*"));
+  const imageFiles = sync(join(path, "img", "**/*"));
   console.log(`👁️ ${"IMAGE".magenta} files we will watch... 👁️`.bold);
   console.table(imageFiles.map((path) => basename(path)));
   watch(imageFiles, series(imagesMin, realoadBrowser));
@@ -129,8 +129,7 @@ const watchFiles = (cb) => {
 
 exports.default = series(
   cleanDist,
-  imagesMin,
-  parallel(compileJS, compileSCSS),
+  parallel(compileJS, imagesMin, compileSCSS),
   parallel(minifyCSS, minifyJS),
   compileHtml,
   watchFiles,
