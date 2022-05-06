@@ -1,4 +1,4 @@
-const { series, parallel, src, dest, watch, lastRun } = require("gulp");
+const { series, parallel, src, dest, watch, lastRun, since } = require("gulp");
 const { sync } = require("glob");
 const sass = require("gulp-sass");
 const { join, basename } = require("path");
@@ -72,7 +72,7 @@ const compileHtml = () =>
     .pipe(dest("dist"));
 
 const imagesMin = () =>
-  src(sync(join(path, "img", "**/*")), lastRun(imagesMin))
+  src(sync(join(path, "img", "**/*")), { since: lastRun(imagesMin) })
     .pipe(
       imagemin([
         imagemin.gifsicle({ interlaced: true }),
