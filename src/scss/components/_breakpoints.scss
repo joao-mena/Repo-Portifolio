@@ -1,11 +1,6 @@
 /*=============== BREAKPOINTS ===============*/
 /* For small devices */
-@media screen and (max-width: 320px) {
-    .container {
-        margin-left: 1rem;
-        margin-right: 1rem;
-    }
-
+@include breakpoint-down($xs) {
     .profile {
         &__info {
             column-gap: 1.5rem;
@@ -23,7 +18,7 @@
 }
 
 /* For medium devices */
-@media screen and (min-width: 576px) {
+@include breakpoint-up($sm) {
     .projects__content {
         grid-template-columns: 332px;
         justify-content: center;
@@ -35,7 +30,7 @@
     }
 }
 
-@media screen and (min-width: 776px) {
+@include breakpoint-up($md) {
     .projects__content,
     .skills__content {
         grid-template-columns: repeat(2, 332px);
@@ -48,12 +43,7 @@
 }
 
 /* For large devices */
-@media screen and (min-width: 992px) {
-    .container {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
+@include breakpoint-up($lg) {
     .change-theme {
         top: 2.5rem;
         right: 2.5rem;
