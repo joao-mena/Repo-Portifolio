@@ -139,8 +139,8 @@ exports.default = series(
 exports.build = series(
   cleanDist,
   compileHtml,
-  compileJS,
   compileSCSS,
+  compileJS,
   minifyCSS,
   minifyJS,
   imagesMin,
