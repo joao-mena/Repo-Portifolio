@@ -1,17 +1,19 @@
-<section class="filters container">
-  <!--=============== FILTERS TABS ===============-->
-  <ul class="filters__content">
-    <button class="filters__button filter-tab-active" data-target="#projects">
-      Experience
-    </button>
-    <button class="filters__button" data-target="#skills">
-      Skills
-    </button>
-  </ul>
+<section class="filters">
+  <div class="container">
+    <!--=============== FILTERS TABS ===============-->
+    <ul class="filters__content">
+      <button class="filters__button filter-tab-active" data-target="#projects">
+        Experience
+      </button>
+      <button class="filters__button" data-target="#skills">
+        Skills
+      </button>
+    </ul>
 
-  <div class="filters__sections">
-    @@include('../components/experience.html')
+    <div class="filters__sections">
+      @@include('../components/experience.html')
 
-    @@include('../components/skills.html')
+      @@include('../components/skills.html')
+    </div>
   </div>
 </section>

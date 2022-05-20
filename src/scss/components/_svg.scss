@@ -1,0 +1,25 @@
+.svg-icon {
+  display: inline-block;
+  width: rem(30px);
+  height: rem(30px);
+
+  &--education {
+    background: no-repeat center url("../img/icon-education.svg");
+    position: absolute;
+    top: space(3);
+    right: space(3);
+  }
+
+  &--work {
+    background: no-repeat center url("../img/icon-work.svg");
+    position: absolute;
+    top: space(3);
+    right: space(3);
+  }
+
+  &--calendar {
+    background: no-repeat center url("../img/icon-calendar.svg");
+    width: rem(15px);
+    height: rem(15px);
+  }
+}

@@ -1,12 +1,19 @@
 @import "config/variables";
+
 @import "base/reset";
 @import "base/functions";
 @import "base/mixins";
+@import "base/utils";
+
 @import "theme/theme";
+
 @import "layout/layout";
+
 @import "components/profile";
 @import "components/button";
 @import "components/filters";
 @import "components/footer";
 @import "components/scroll";
 @import "components/breakpoints";
+@import "components/timeline";
+@import "components/svg";

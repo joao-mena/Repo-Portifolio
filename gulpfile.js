@@ -14,6 +14,7 @@ sass.compiler = require("node-sass");
 const path = join(__dirname, "src");
 const fileinclude = require("gulp-file-include");
 const imagemin = require("gulp-imagemin");
+const concat = require("gulp-concat");
 const del = require("del");
 
 const cleanDist = () => del(["dist"]);
@@ -24,17 +25,6 @@ const compileSCSS = () =>
     .pipe(sass().on("error", sass.logError))
     .pipe(sourcemaps.write("."))
     .pipe(dest("dist/css"));
-
-const compileJS = () =>
-  src(sync(join(path, "js", "**/*.js")))
-    .pipe(sourcemaps.init())
-    .pipe(
-      babel({
-        presets: ["@babel/env"],
-      }),
-    )
-    .pipe(sourcemaps.write("."))
-    .pipe(dest("dist/js"));
 
 const minifyCSS = () =>
   src(sync(join("dist", "**/!(*.min).css")))
@@ -50,8 +40,21 @@ const minifyCSS = () =>
     .pipe(sourcemaps.write("."))
     .pipe(dest("dist/css"));
 
+const compileJS = () =>
+  src(sync(join(path, "js", "**/*.js")))
+    .pipe(sourcemaps.init())
+    .pipe(concat("main.js"))
+    .pipe(
+      babel({
+        presets: ["@babel/env"],
+      }),
+    )
+    .pipe(sourcemaps.write("."))
+    .pipe(dest("dist/js"));
+
 const minifyJS = () =>
   src(sync(join("dist", "**/*.js")))
+    .pipe(concat("main.js"))
     .pipe(uglify())
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sourcemaps.write("."))
