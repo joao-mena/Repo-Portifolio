@@ -34,20 +34,6 @@
         bottom: 0;
       }
 
-      &:nth-child(odd) {
-        div {
-          left: rem(45px);
-          transform: translate3d(200px, 0, 0);
-        }
-      }
-
-      &:nth-child(even) {
-        div {
-          left: -445px;
-          transform: translate3d(-200px, 0, 0);
-        }
-      }
-
       &.show {
         div {
           transform: none;
@@ -82,15 +68,27 @@
       li {
         margin: 0;
 
-        &:nth-child(even) {
-          div {
-            left: rem(45px);
-          }
-        }
-
         div {
           max-width: calc(100vw - #{rem(80px)});
+          left: rem(45px);
+          transform: translate3d(200px, 0, 0);
         }
+      }
+    }
+  }
+
+  @include breakpoint-up($lg) {
+    &:nth-child(odd) {
+      div {
+        left: rem(45px);
+        transform: translate3d(200px, 0, 0);
+      }
+    }
+
+    &:nth-child(even) {
+      div {
+        left: -445px;
+        transform: translate3d(-200px, 0, 0);
       }
     }
   }
