@@ -36,7 +36,7 @@
 
       &.show {
         div {
-          transform: none;
+          transform: none !important;
           visibility: visible;
           opacity: 1;
         }
@@ -52,6 +52,10 @@
         visibility: hidden;
         opacity: 0;
         transition: all 0.5s ease-in-out;
+
+        transform: none !important;
+        visibility: visible;
+        opacity: 1;
 
         time {
           display: block;
@@ -78,17 +82,21 @@
   }
 
   @include breakpoint-up($lg) {
-    &:nth-child(odd) {
-      div {
-        left: rem(45px);
-        transform: translate3d(200px, 0, 0);
-      }
-    }
+    ul {
+      li {
+        &:nth-child(odd) {
+          div {
+            left: rem(45px);
+            transform: translate3d(200px, 0, 0);
+          }
+        }
 
-    &:nth-child(even) {
-      div {
-        left: -445px;
-        transform: translate3d(-200px, 0, 0);
+        &:nth-child(even) {
+          div {
+            left: -445px;
+            transform: translate3d(-200px, 0, 0);
+          }
+        }
       }
     }
   }
